@@ -19,11 +19,7 @@ class BatchNorm1d:
         self.running_V = np.ones((1, num_features))
 
     def forward(self, Z, eval=False):
-        """
-        The eval parameter is to indicate whether we are in the
-        training phase of the problem or the inference phase.
-        So see what values you need to recompute when eval is False.
-        """
+        
         self.Z = Z
         self.N = self.Z.shape[0]
         self.C = self.Z.shape[1]
