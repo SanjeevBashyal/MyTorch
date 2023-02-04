@@ -4,60 +4,49 @@ import numpy as np
 class MSELoss:
 
     def forward(self, A, Y):
-        """
-        Calculate the Mean Squared error
-        :param A: Output of the model of shape (N, C)
-        :param Y: Ground-truth values of shape (N, C)
-        :Return: MSE Loss(scalar)
-
-        """
 
         self.A = A
         self.Y = Y
-        self.N = None  # TODO
-        self.C = None  # TODO
-        se = None  # TODO
-        sse = None  # TODO
-        mse = None  # TODO
+        self.N = self.A.shape[0]
+        self.C = self.A.shape[1]
 
-        return NotImplemented
+        Ones_N=np.ones((self.N,1))
+        Ones_C=np.ones((self.C,1))
+
+        se = np.square(A-Y)
+        sse = Ones_N.T @ se @ Ones_C
+        mse = sse/(2*self.N*self.C)
+
+        return mse
 
     def backward(self):
 
-        dLdA = None
+        dLdA = (self.A - self.Y)/(self.N*self.C)
 
-        return NotImplemented
+        return dLdA
 
 
 class CrossEntropyLoss:
 
     def forward(self, A, Y):
-        """
-        Calculate the Cross Entropy Loss
-        :param A: Output of the model of shape (N, C)
-        :param Y: Ground-truth values of shape (N, C)
-        :Return: CrossEntropyLoss(scalar)
 
-        Refer the the writeup to determine the shapes of all the variables.
-        Use dtype ='f' whenever initializing with np.zeros()
-        """
         self.A = A
         self.Y = Y
-        N = None  # TODO
-        C = None  # TODO
+        self.N = self.A.shape[0]
+        self.C = self.A.shape[1]
 
-        Ones_C = None  # TODO
-        Ones_N = None  # TODO
+        Ones_N=np.ones((self.N,1))
+        Ones_C=np.ones((self.C,1))
 
-        self.softmax = None  # TODO
-        crossentropy = None  # TODO
-        sum_crossentropy = None  # TODO
-        L = sum_crossentropy / N
+        self.softmax = np.exp(A) / np.sum(np.exp(A),axis=1)[:,None]
+        crossentropy = np.multiply(-Y,np.log(self.softmax)) @ Ones_C
+        sum_crossentropy = Ones_N.T @ crossentropy
+        L = sum_crossentropy / self.N
 
-        return NotImplemented
+        return L
 
     def backward(self):
 
-        dLdA = None  # TODO
+        dLdA = self.softmax-self.Y
 
-        return NotImplemented
+        return dLdA
