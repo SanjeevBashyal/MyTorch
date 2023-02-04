@@ -56,7 +56,7 @@ class ReLU:
 
     def backward(self):
 
-        dAdZ = self.A
+        dAdZ = np.zeros(self.A.shape, dtype="f")
         dAdZ[np.where(self.A>0)]=1
 
         return dAdZ
